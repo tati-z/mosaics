@@ -163,43 +163,42 @@ class MeshCache:
 	'''
 	_fib_mesh = {}
 	_lloyd_mesh = {}
-	
+
 	def __init__(self, img):
 		# only allow one cache per image.
 		self.img = img
-	
+
 	def fib_cache(self, step, lock, memoise=False, max_ = 20):
 		'''
 		Compute the fib mesh of size step, for current image and cashes it
 		because the fib sequence, i can use memoisation here especially for tests. 
 		cache for fib_step 28 should be cache of fib 29 + 30. just add the points together and return them to me
 		'''
-		if self._fib_mesh.get(step) is not None:
-			print('~~~ reusing fib({}). ~~~'.format(step))
-			return self._fib_mesh[step]
-		elif memoise:
-			if step >= max_:
-				self._fib_mesh[step] = fib_mesh(self.img, max_)
-				return self._fib_mesh[step]
-			elif step == max_ - 1:
+		with lock:
+			if self._fib_mesh.get(step) is not None:
+				print('~~~ reusing fib({}). ~~~'.format(step))
+			elif memoise:
+				if step >= max_:
+					self._fib_mesh[step] = fib_mesh(self.img, max_)
+					return self._fib_mesh[step]
+				elif step == max_ - 1:
+					self._fib_mesh[step] = fib_mesh(self.img, step)
+					return self._fib_mesh[step]
+				else:
+					one = self.fib_cache(step + 1, lock, True)
+					two = self.fib_cache(step + 2, lock, True)
+					self._fib_mesh[step] = np.append(one, two, axis=0)
+					return self._fib_mesh[step]
+			else:
+				# no memoisation: one time transaction!
 				self._fib_mesh[step] = fib_mesh(self.img, step)
-				return self._fib_mesh[step]
-			one = self.fib_cache(step + 1, lock, True)
-			two = self.fib_cache(step + 2, lock, True)
-			self._fib_mesh[step] = np.append(one, two, axis=0)
 			return self._fib_mesh[step]
-		else:
-			# no memoisation: one time transaction!
-			self._fib_mesh[step] = fib_mesh(self.img, step)
-			return self._fib_mesh[step]	
-		
-	
+
 	def lloyd_cache(self, cell_itter, lock):
 		'''
 		Compute the lloyd mesh of (cell,itter) tuple, for current image and cashes it.
 		'''
-		lock.acquire()
-		if self._lloyd_mesh.get(cell_itter) is None:
-			self._lloyd_mesh[cell_itter] = lloyd_mesh(self.img, *cell_itter)
-		lock.release()
-		return self._lloyd_mesh[cell_itter]
+		with lock:
+			if self._lloyd_mesh.get(cell_itter) is None:
+				self._lloyd_mesh[cell_itter] = lloyd_mesh(self.img, *cell_itter)
+			return self._lloyd_mesh[cell_itter]

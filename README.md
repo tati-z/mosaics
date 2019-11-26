@@ -1,9 +1,6 @@
 # MOSAIC_S
 
-![example](https://github.com/tati-z/mosaics/blob/master/samples/squares.png)
-
-
-And [more](https://docs.google.com/presentation/d/1y_FxUe-3iRD8DtuTCKmvoulr0JZXXAkFO99FeK5aV8U/edit?usp=sharing)
+![example](https://github.com/tati-z/mosaics/blob/master/samples/demo.png)
 
 ## To execute the program
 Simply run `main.py`
@@ -25,4 +22,14 @@ But I did my best to ensure resource is used efficiently even if running in para
 
 Thanks.
 
-[Project Blog](https://tatianaimageprocessing.wordpress.com)
+## Sneak Peeks
+![example](https://github.com/tati-z/mosaics/blob/master/samples/wolf.png)
+
+![example](https://github.com/tati-z/mosaics/blob/master/samples/flower.png)
+
+![example](https://github.com/tati-z/mosaics/blob/master/samples/thellp.png)
+
+![example](https://github.com/tati-z/mosaics/blob/master/samples/starry_starry_night.png)
+
+## [Slides](https://docs.google.com/presentation/d/1y_FxUe-3iRD8DtuTCKmvoulr0JZXXAkFO99FeK5aV8U/edit?usp=sharing)
+## [Blog](https://tatianaimageprocessing.wordpress.com)

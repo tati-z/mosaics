@@ -20,6 +20,9 @@
 
 import cv2, random, glob
 
+# The separated text effect
+#  b.append(' '.join(video.xml_captions[0].text).split('\n'))
+
 # applies a random gradien map to an image 
 def map_gradient(img, queue = None):
 	'''
@@ -84,7 +87,7 @@ def gradient_blend(im):
 			# if the size of the gradient fits, use it, else, thank you, next.
 			gradient = gradient[0:height, 0:width]
 			blended  = blends[the_chosen_one](img,gradient)
-			return the_chosen_one, blended
+			return the_chosen_one + ':' + f , blended
 		except:
 			# go to the next image, this one didn't work
 			pass

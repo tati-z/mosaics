@@ -15,6 +15,9 @@
 # 
 # anyway, moving on
 
+# TODO: even after a UI gets implemented. maybe have a random option where the program will generate a random combination of styling.. instead of having the user trying them all...
+# You never know. unless you tried them all//
+
 import cv2, random, glob
 
 # applies a random gradien map to an image 

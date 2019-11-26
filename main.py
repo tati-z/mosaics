@@ -49,7 +49,7 @@ if __name__=='__main__':
 	# shuffle to images, to be surprised everytime
 	random.shuffle(imgs)
 
-	# To be commented out when testing below
+	# TEST CASES
 	funcs = {
 		'squares': [
 			(squares,{}),
@@ -112,7 +112,7 @@ if __name__=='__main__':
 				Thread(target=f, args=(im,), kwargs=kwargs).start()
 				
 		print('--finished sending all funcs--')
-		
+
 		# temporary storage before they go to be displayed
 		# optionally they would be sent to the display queue, but
 		# it;s expecting them in bashes, so.. this is the bash.
@@ -126,7 +126,7 @@ if __name__=='__main__':
 			# don't wait for any of it. you are done here.
 			mosaics.append(img)
 			q_mosaics.task_done()
-		
+		# wait for all mosaic thread to put something in the queue.
 		q_mosaics.join()
 		print('---finished all mosaics---')
 		
@@ -142,14 +142,19 @@ if __name__=='__main__':
 		# wait for all gradients to finish. kinda unecessary Queue.get() block if nothing is there
 		# but for best practice's sake//
 		q_gradients.join()
-		# display
 		print('\n~~~finished all gradients~~~\n')
 
-		# send everything at once to allow comparaison
+		# send everything at once to the display queue
 		q_display.put((im, mosaics, gradients))
-		print('\nDONE~~~\n')
+		# BUG: the first one shouldn't sleep. the rest, yes. maybe have a done processing variable?
+		# TODO: on btw you can use that processing variable to make a progressbar? that'd be cool..
+		# the wait time for each subsequenet should also be proportional to FUNC_COUNT
+		# and not just some majic number 20
+		print('\nSLEEPING~~~\n')
 		time.sleep(20)
+		print('\nDONE~~~\n')
 		sem.release()
+		
 		
 	# -- THE START ---
 

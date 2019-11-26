@@ -59,6 +59,16 @@
 # this partitioning only looks better when the output needs to be evenly divided.
 # for proportional images, its output looked more flat even compared to the random partition.
 
+# 4. CIRCULAR TILES
+
+# Inspired by halftoned dots, circlar tiles use the intensity within the grascale version of the image
+# to decide both the radius to use for that convolution, and the fill color (value of the grayscal)
+# color to use for the mask.
+
+# TODO: use the factory design pattern in here for code reuse. also add this to the slies as improvements
+# TODO: compress the image before working with it.. but reconstruct it back. this will also help gradients images take less time..
+# see https://www.researchgate.net/publication/328190353_IMAGE_COMPRESSION_USING_HAAR_WAVELET_TRANSFORM/link/5bbd99a192851c7fde376351/download
+
 import cv2
 import random
 import numpy as np

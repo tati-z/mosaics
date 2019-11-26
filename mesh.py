@@ -146,7 +146,8 @@ def lloyd_mesh(im, cells=10, itter=10):
 	return add_edges(centers, *im.shape[:2])
 
 
- 
+# TODO: would it be necessary to replace n random points around even if we cached it already?
+# caching points makes the mesh predictable? replacing M points with other lerped M points would prevent stalenes?
 class MeshCache:
 	'''
 	The mesh is only computed once per image. this allows to speed things up.

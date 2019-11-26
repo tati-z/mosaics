@@ -74,6 +74,7 @@ def gradient_blend(im):
 		return "NO FILTER", img
 	
 	height, width = img.shape[:2]
+	# TODO:FEATURE: just resize the image to make it fit instead of looping no?
 	for f in imgs:
 		gradient = cv2.imread(f)
 		try:

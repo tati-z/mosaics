@@ -42,8 +42,7 @@ from util import show_fewer
 
 import glob 
 if __name__=='__main__':
-	
-	# read all the images in the image folders
+	# read all the image names in the image folders
 	imgs = glob.glob('./images/*[.jpg, .png]')
 
 	# shuffle to images, to be surprised everytime
@@ -72,9 +71,9 @@ if __name__=='__main__':
 		],
 		'pentagons': [
 			(pentagons,{}),
-			(pentagons,{'fib_step':7}),
+			(pentagons,{'fib_step':7}), # 5% of the image sampling looks good play with this variable
 			(pentagons,{'fib_step':23}),
-			(pentagons,{'lloyd_cells':2}),
+			(pentagons,{'lloyd_cells':2}), # e.g. is 2 = 50%, 5 = 20% dense
 			(pentagons,{'lloyd_cells':47}),
 			(pentagons,{'lloyd_cells':97}),
 		],
@@ -83,31 +82,36 @@ if __name__=='__main__':
 	FUNCS_COUNT = reduce(lambda x,y: x+y, map(lambda x: len(funcs[x]), funcs))
 	MAX_INFLIGHT = 3
 	sem = multiprocessing.Semaphore(value=MAX_INFLIGHT)
+	
 	def make_mosaics_worker(im, q_display):
 		sem.acquire()
 		q_mosaics = Queue() # when all mosaics are done processing they will be here
 		q_gradients = Queue() # same for gradients
-		mesh_cache = MeshCache(im) # one mesh cache per image
+		mesh_cache = MeshCache(im) # one mesh cache per image, (recycle the points) 
 			
 		fib_mesh_lock = multiprocessing.Lock() # when getting the fib mesh cache
 		lloyd_mesh_lock = multiprocessing.Lock() # when getting the lloyd mesh cache
 		
-		# for all operations needed to be done on the image, create a thread for them
+		# for all operations needed to be done on the image, create a thread each
 		for tile_type in funcs:
 			# for each function, get its argument as predefined
 			for f, kwargs in funcs[tile_type]:
-				# when each finishes, set the images in the q_mosaics
-				step = kwargs.get('fib_step') # 5% of the image sampling looks good play with this variable
-				cells = kwargs.get('lloyd_cells') # e.g. is 2 = 50%, 5 = 20% dense
-				itter = 10 # find the perfect lloyd tiles after 10 itterations
-				
+
+				# set the queue: when each finishes, set the images to be sent to q_mosaics 
 				kwargs.update({'queue': q_mosaics})
-				# if the current function requires a mesh, get the cached one
-				# or compute it if fisrt time.
+				
+				# if the current function requires a mesh, get the cached one or compute it if fisrt time.
+				step = kwargs.get('fib_step') 
+				cells = kwargs.get('lloyd_cells') 
+				
+				# BUT, the second part will never execute, whereas the values for step and cells aren't the same.
+				# BUG: replace elif with if
 				if kwargs.get('fib_step'):
-					kwargs.update({'points': mesh_cache.fib_cache(step,fib_mesh_lock)})
+					kwargs.update({'points': mesh_cache.fib_cache(step, fib_mesh_lock)})
 				elif kwargs.get('lloyd_cells'):
+					itter = 10 # find the perfect lloyd tiles after 10 itterations or play with it.
 					kwargs.update({'points': mesh_cache.lloyd_cache((cells,itter),lloyd_mesh_lock)})
+					
 				# start a thread for this tile type
 				Thread(target=f, args=(im,), kwargs=kwargs).start()
 				

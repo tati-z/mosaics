@@ -30,5 +30,3 @@ Thanks.
 ![example](https://github.com/tati-z/mosaics/blob/master/samples/thellp.png)
 
 ![example](https://github.com/tati-z/mosaics/blob/master/samples/starry_starry_night.png)
-
-## [Presentation](https://docs.google.com/presentation/d/1y_FxUe-3iRD8DtuTCKmvoulr0JZXXAkFO99FeK5aV8U/edit?usp=sharing)
